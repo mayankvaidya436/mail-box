@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { setToken,setLoggedInStatus } from "../Store/authSlice";
+import { authActions } from "../Store/authSlice";
 import { useDispatch } from "react-redux";
 
 const SignInForm = ({ onSwitchMode }) => {
@@ -34,6 +34,13 @@ const SignInForm = ({ onSwitchMode }) => {
           }),
         }
       );
+      if(response.ok){
+        const data = await response.json();
+        const idToken = data.idToken;
+        const userId = data.email;
+        dispatch(authActions.login({ idToken, userId }));
+        navigate("/");
+      }
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -47,11 +54,7 @@ const SignInForm = ({ onSwitchMode }) => {
         password: "",
       });
 
-      const data = await response.json();
-      console.log(data);
-      dispatch(setToken(data.idToken));
-      dispatch(setLoggedInStatus(true));
-      navigate("/welcome");
+      
     } catch (error) {
       console.error("Error:", error);
     }

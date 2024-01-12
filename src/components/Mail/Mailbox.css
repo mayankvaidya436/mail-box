@@ -1,0 +1,24 @@
+.email-compose-container {
+    width: 70%;
+    margin: 50px auto;
+    height: 80vh;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .email-editor-wrapper {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+  }
+  
+  .email-editor {
+    height: 200px;
+    padding: 10px;
+  }
+  
+  .email-editor-toolbar {
+    border-bottom: 1px solid #ced4da;
+    background-color: #f8f9fa;
+  }
