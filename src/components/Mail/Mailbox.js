@@ -25,6 +25,9 @@ console.log("ser",replacedSenderMail)
     console.log("mail", plainText);
 
     const mailData = {
+        id:Date.now(),
+    
+        emailIsNew:true,
       email: email,
       subject: subject,
       mailBody: plainText,
