@@ -1,14 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { ListGroup, Badge } from 'react-bootstrap';
 import { BsEnvelope } from 'react-icons/bs';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import "./Inbox.css"
+import { FaTrash } from "react-icons/fa";
+import reRenderContext from '../Store/reRenderContext';
+
 const Inbox = () => {
       const [emails, setEmails] = useState([]);
       const userEmail = useSelector((state) => state.auth.userId);
       const replacedSenderMail = userEmail.replace(/[@.]/g, "");
       const navigate = useNavigate();
+      
+  const { iSReRender, setReRender } = useContext(reRenderContext);
+  const [key, setKey] = useState();
       
   useEffect(() => {
     const fetchEmails = async () => {
@@ -35,7 +41,7 @@ const Inbox = () => {
     
 
     fetchEmails();
-  }, [replacedSenderMail]);
+  }, [replacedSenderMail,iSReRender]);
 
   const handleEmailClick = (emailId) => {
     console.log('Clicked email ID:', emailId);
@@ -51,6 +57,60 @@ const Inbox = () => {
       console.error('Email ID is undefined or null.');
     }
   };
+  const handleDeleteClick = async (emailId) => {
+    console.log("delete", emailId);
+
+    try {
+      const response = await fetch(
+        `https://mailboxclient-d7818-default-rtdb.firebaseio.com/sentMail${replacedSenderMail}.json`
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch emails");
+      }
+
+      const data = await response.json();
+
+      if (data) {
+        let foundEmail = false;
+
+        Object.entries(data).forEach(([key, email]) => {
+          if (email.id === Number(emailId)) {
+            foundEmail = true;
+
+            console.log("Key:", key);
+            setKey(key);
+          }
+        });
+
+        if (!foundEmail) {
+          console.error("Email not found for deletion.");
+          return;
+        }
+
+        const deleteId = async () => {
+          const deleteResponse = await fetch(
+            `https://mailboxclient-d7818-default-rtdb.firebaseio.com/sentMail${replacedSenderMail}/${key}.json`,
+            {
+              method: "DELETE",
+            }
+          );
+
+          if (!deleteResponse.ok) {
+            throw new Error("Failed to delete email");
+          }
+          if (response.ok) {
+            console.log("DELETE!!!");
+          }
+          setReRender(true);
+        };
+
+        deleteId();
+      }
+    } catch (error) {
+      console.error("Error handling delete:", error);
+    }
+};
 
   return (
     <div className="inbox">

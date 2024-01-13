@@ -1,13 +1,15 @@
-import React, { useState,useEffect } from 'react';
+import React, {useContext, useState,useEffect } from 'react';
 import { BsPencilSquare, BsInbox, BsFileText, BsTrash } from 'react-icons/bs';
 import Mailbox from '../Mail/Mailbox';
 import { useSelector } from 'react-redux';
+import reRenderContext from '../Store/reRenderContext';
 const Sidebar = ({ onTabChange }) => {
     const userEmail = useSelector((state) => state.auth.userId);
     const replacedSenderMail = userEmail.replace(/[@.]/g, '');
   const [showComposeModal, setShowComposeModal] = useState(false);
    
   const [count,setCount] = useState(0);
+  const { iSReRender } = useContext(reRenderContext);
   const handleComposeClick = () => {
     setShowComposeModal(true);
   };
@@ -50,7 +52,7 @@ useEffect(() => {
   };
 
   fetchEmails();
-}, []);
+}, [iSReRender]);
 
   return (
     <div className="sidebar bg-light" style={{"width":"15%","height":"80vh","marginTop":"2%","float":"left"}}>
@@ -60,7 +62,8 @@ useEffect(() => {
 
       <ul className="list-group m-1">
         <li className="list-group-item" onClick={handleInboxClick}>
-          <BsInbox /> Inbox {unreadCount}
+        <BsInbox /> Inbox <span className='bg-dark' style={{"color":"white","margin":"2px","padding":"3px","borderRadius":"50px"
+        }}>{unreadCount}</span>
         </li>
         <li className="list-group-item">
           <BsFileText /> Draft

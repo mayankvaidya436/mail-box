@@ -8,16 +8,20 @@ import "../node_modules/bootstrap/dist/css/bootstrap.css";
 import { Provider } from 'react-redux';
 import store from './components/Store/store';
 import { BrowserRouter } from 'react-router-dom';
+import reRenderContext from './components/Store/reRenderContext';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
   <BrowserRouter>
+  <reRenderContext>
   <Provider store={store}>
   <React.StrictMode>
     <App />
   </React.StrictMode>
   </Provider>
+  </reRenderContext>
   </BrowserRouter>
+  
 );
 
 // If you want to start measuring performance in your app, pass a function
