@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import {Modal, Form, Button } from "react-bootstrap";
 import { Editor } from "react-draft-wysiwyg";
 import { EditorState, convertToRaw } from "draft-js";
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import "./Mailbox.css";
 import { useSelector } from "react-redux";
 
-const Mailbox = () => {
+const Mailbox = ({ showComposeModal, handleCloseComposeModal }) => {
+    
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [editorState, setEditorState] = useState(EditorState.createEmpty());
@@ -50,13 +51,18 @@ console.log("ser",replacedSenderMail)
       setEmail("");
       setSubject("");
       setEditorState(EditorState.createEmpty());
+      handleCloseComposeModal();
     } catch (err) {
       console.log(err);
     }
   };
 
   return (
-    <div className="email-compose-container">
+    <Modal show={showComposeModal} onHide={handleCloseComposeModal}>
+    <Modal.Header closeButton>
+      <Modal.Title>Compose Email</Modal.Title>
+    </Modal.Header>
+    <Modal.Body>
       <Form onSubmit={submitHandler}>
         <Form.Group controlId="to" className="m-2">
           <Form.Control
@@ -66,6 +72,7 @@ console.log("ser",replacedSenderMail)
             onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Group>
+
 
         <Form.Group controlId="subject" className="m-2">
           <Form.Control
@@ -94,7 +101,9 @@ console.log("ser",replacedSenderMail)
           Send
         </Button>
       </Form>
-    </div>
+      </Modal.Body>
+    </Modal>
+    
   );
 };
 
