@@ -24,11 +24,14 @@ const Sidebar = ({ onTabChange }) => {
   const handleDraftClick = () => {
     onTabChange('draft');
   };
-const unreadCount = count;
+  const handleSentClick = () => {
+    onTabChange('sent');
+  };
+  const unreadCount = count;
 
 
 useEffect(() => {
-  const fetchEmails = async () => {
+  const fetchEmails = async (folder) => {
     try {
       const response = await fetch(
         `https://mailboxclient-d7818-default-rtdb.firebaseio.com/sentMail${replacedSenderMail}.json`
@@ -43,15 +46,18 @@ useEffect(() => {
       if (data) {
         const unreadEmails = Object.values(data).filter((item) => item.emailIsNew);
         const emailIsNewArray = unreadEmails.map((item) => item.emailIsNew);
-        console.log("emailIsNew array", emailIsNewArray.length);
+        
         setCount(emailIsNewArray.length)
       }
     } catch (error) {
-      console.error('Error fetching emails:', error);
+        console.error(`Error fetching ${folder} emails:`, error);
     }
   };
+  
+  fetchEmails('inbox'); // Fetch inbox emails
+  fetchEmails('sent'); // Fetch sent emails
 
-  fetchEmails();
+
 }, [iSReRender]);
 
   return (
@@ -67,6 +73,9 @@ useEffect(() => {
         </li>
         <li className="list-group-item">
           <BsFileText /> Draft
+        </li>
+        <li className="list-group-item" onClick={handleSentClick}>
+          <BsFileText /> Sent
         </li>
         <li className="list-group-item" onClick={handleDraftClick}>
           <BsTrash /> Trash
